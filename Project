@@ -1,7 +1,7 @@
 # def starting_point(x1,y1,x2,y2):
 #   P=(x1,y1,x2,y2)
 #  print(P)
-def main():
+def main(Montrer, aléatoire):
     # Montre le labyrinthe
     def show_maze():
         for i in range(len(Maze)):
@@ -42,12 +42,16 @@ def main():
                                     Maze[y1 + y2][x1 + x2] = n - 1
 
     # Maze
-    Maze = [[0, 0, 1, 0, 1, 0, 0, 0, 1, 0],
-            [0, 0, 1, 0, 1, 0, 1, 0, 1, 0],
-            [0, 0, 1, 0, 1, 0, 1, 1, 1, 1],
-            [0, 0, 1, 0, 1, 0, 1, 0, 0, 0],
-            [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 1, 1, 1, 0, 0]]
+    if aléatoire==1:
+        print("pas fait")
+    else :
+        Maze = [[0, 0, 1, 0, 1, 0, 0, 0, 1, 0],
+                [0, 0, 1, 0, 0, 0, 0, 0, 1, 0],
+                [0, 0, 0, 0, 1, 0, 1, 0, 1, 1],
+                [0, 0, 1, 0, 1, 0, 1, 0, 0, 0],
+                [0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
+                [0, 0, 0, 0, 1, 0, 0, 1, 0, 0]]
+
     for i in range(len(Maze)):
         for j in range(len(Maze[i])):
             if Maze[i][j]==1:
@@ -66,12 +70,15 @@ def main():
     while Path[P[2]][P[3]] == -1:
         double_scanner()
         n+=1
-        print("n=",n)
-        print("Path :")
-        show_path()
-        print(" ")
-        print("Maze :")
-        show_maze()
+        if Montrer==1:
+            print("n=",n)
+            print("Path :")
+            show_path()
+            print(" ")
+            print("Maze :")
+            show_maze()
+        if n==50000:
+            print("n=50000")
 
     # On trouve le chemin le plus court ici depuis la sortie
     Sens=0
@@ -90,11 +97,7 @@ def main():
     print(" ")
     print("Maze :")
     show_maze()
-    print("C'est finit")
+    print("C'est fini")
 
 P = [0, 0, 5, 9]
-main()
-
-#else :
-#   print("x2,y2=",x2, y2)
-#  print("x1,y1=",x1,y1)
+main(1,0)
