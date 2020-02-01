@@ -1,0 +1,82 @@
+# def starting_point(x1,y1,x2,y2):
+#   P=(x1,y1,x2,y2)
+#  print(P)
+def main():
+    # Montre le labyrinthe
+    def show_maze():
+        for i in range(len(Maze)):
+            for j in range(len(Maze[i])):
+                if Maze[i][j]==1:
+                    print ("#", end=" ")
+                else :
+                    print(Maze[i][j], end=" ")
+            print("")
+
+    # Montre le nombre de case parcouru
+    def show_path():
+        for i in range(len(Path)):
+            for j in range(len(Path[i])):
+                if Path[i][j]==-1:
+                    print ("#", end=" ")
+                else :
+                    print(Path[i][j], end=" ")
+            print("")
+
+    # Double scanneur
+    def double_scanner():
+        for y1 in range(0,len(Maze)-1):
+            for x1 in range(0,len(Maze[y1])-1):
+                if Path[y1][x1] == n:
+                    for y2 in range(-1, 2):
+                        for x2 in range(-1, 2):
+                            if (0<=y1+y2<=(len(Maze)-1) and 0<=x1+x2<=(len(Maze[y1]))-1) and Path[y1 + y2][x1 + x2] == -1 and Maze[y1+y2][x1+x2]!=1:
+                                # b=x a=y; vérifie toute les cases autour de la case trouvé, le fait en ligne
+                                # comme un scanner de haut en bas commence en a=1,b=0
+                                Path[y1 + y2][x1 + x2] = n + 1
+
+    # Maze
+    Maze = [[0, 0, 0, 0, 1, 0, 0, 0, 1, 0],
+            [0, 1, 0, 0, 1, 0, 1, 0, 1, 0],
+            [0, 1, 1, 0, 1, 0, 1, 1, 1, 1],
+            [0, 0, 1, 0, 1, 0, 1, 0, 0, 0],
+            [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 1, 1, 1, 1, 1, 1, 0, 0]]
+    h, w = len(Maze), len(Maze[0])  # h c'est la hauteur et w la longueur; hauteur de bas en haut et longeur de gauche à droite sur le
+    # tableau au dessus
+
+    # Création du Path avec le nombre de case parcouru, tous initialement à -1 sauf le départ
+    Path = [[-1 for x in range(w)] for y in range(h)]
+    Path[P[0]][P[1]] = 0  # Départ
+    Maze[P[2]][P[3]] = 2  # Arrivé
+    n, a, b = 0, 0, 0
+
+    # A partir de là, on commence le pathfinding
+    while Path[P[2]][P[3]] == -1:
+        double_scanner()
+        n+=1
+        print("n=",n)
+        print("Path :")
+        show_path()
+        print(" ")
+        print("Maze :")
+        show_maze()
+
+    Sens = 0
+    while n!=0:
+        for y2 in range(-1, 2):
+            for x2 in range(-1, 2):
+                if (0 <= y1 + y2 <= (len(Maze) - 1) and 0 <= x1 + x2 <= (len(Maze[y1])) - 1) and Path[y1 + y2][
+                    x1 + x2] == -1 and Maze[y1 + y2][x1 + x2] != 1:
+    print("Path :")
+    show_path()
+    print(" ")
+    print("Maze :")
+    show_maze()
+    print("C'est finit")
+
+P = [0, 0, 5, 9]
+main()
+
+#else :
+#   print("x2,y2=",x2, y2)
+#  print("x1,y1=",x1,y1)
