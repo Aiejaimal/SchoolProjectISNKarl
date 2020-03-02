@@ -1,7 +1,12 @@
+from tkinter import *
+from random import shuffle, randrange
+import time
+
 # def starting_point(x1,y1,x2,y2):
 #   P=(x1,y1,x2,y2)
 #  print(P)
 def main(Montrer, aléatoire):
+    global h, w, Maze, Path
     # Montre le labyrinthe
     def show_maze():
         for i in range(len(Maze)):
@@ -40,22 +45,93 @@ def main(Montrer, aléatoire):
                             for x2 in range(-1, 2):
                                 if (0 <= y1 + y2 <= (len(Maze) - 1) and 0 <= x1 + x2 <= (len(Maze[y1])) - 1) and Maze[y1 + y2][x1 + x2] == 0 and Maze[y1 + y2][x1 + x2] != -1 and Path[y1 + y2][x1 + x2]==n-1:
                                     Maze[y1 + y2][x1 + x2] = n - 1
+    # Interface
+    def interface():
+        fen = Tk()
+        screen_width = fen.winfo_screenwidth()
+        screen_height = fen.winfo_screenheight()
+        if screen_height / h >= screen_width / w:
+            pixel = screen_width / w
+        else:
+            pixel = screen_height / h
+        pixel = int(pixel * 0.9)
+        fen.title("Pathfinding algorithm")
+        Terrain=Canvas(fen, height=pixel * h, width=pixel * w)
+        Terrain.pack()
+        carreau = [[Terrain.create_rectangle(i * pixel, j * pixel, (i + 1) * pixel, (j + 1) * pixel, fill="#FFFFFF") for i in range(w)] for j in range(h)]
 
-    # Maze
+        for y1 in range(len(Maze)):
+            for x1 in range(len(Maze[y1])):
+                if Maze[y1][x1]==-1:
+                    carreau[y1][x1] = Terrain.create_rectangle(x1 * pixel, y1 * pixel, (x1 + 1) * pixel, (y1 + 1) * pixel, fill='black')
+                else :
+                    carreau[y1][x1] = Terrain.create_rectangle(x1 * pixel, y1 * pixel, (x1 + 1) * pixel,(y1 + 1) * pixel, fill='gray')
+
+
+        for y1 in range(len(Maze)):
+            for x1 in range(len(Maze[y1])):
+                if Maze[y1][x1] != -1 and Maze[y1][x1] != 0 :
+                    carreau[y1][x1] = Terrain.create_rectangle(x1 * pixel, y1 * pixel, (x1 + 1) * pixel,(y1 + 1) * pixel, fill='#B4B425')
+                    carreau[y1][x1] = Terrain.create_text(x1*(pixel)+(pixel/2), y1*(pixel)+(pixel/2), text=Maze[y1][x1],font=('Times', (int(pixel*0.5)), 'bold'))
+        carreau[P[0]][P[1]] = Terrain.create_text(P[1] * (pixel) + (pixel / 2), P[0] * (pixel) + (pixel / 2),text=Maze[P[0]][P[1]], font=('Times', (int(pixel * 0.5)), 'bold'))
+
+        carreau[P[2]][P[3]] = Terrain.create_rectangle(P[3] * pixel, P[2] * pixel, (P[3] + 1) * pixel, (P[2] + 1) * pixel,fill='green') #Fin
+        carreau[P[0]][P[1]] = Terrain.create_rectangle(P[1] * pixel, P[0] * pixel, (P[1] + 1) * pixel, (P[0] + 1) * pixel,fill='red') #Début
+
+        carreau[P[0]][P[1]] = Terrain.create_text(P[1] * (pixel) + (pixel / 2), P[0] * (pixel) + (pixel / 2), text=Maze[P[0]][P[1]],font=('Times', (int(pixel*0.5)), 'bold'))
+        carreau[P[2]][P[3]] = Terrain.create_text(P[3] * (pixel) + (pixel / 2), P[2] * (pixel) + (pixel / 2),text=Maze[P[2]][P[3]], font=('Times', (int(pixel * 0.5)), 'bold'))
+        fen.mainloop()
+
+    #Création du labyrinthe, repris de qq et adapté pour notre programme
+    def make_maze(w, h):
+        vis = [[0] * w + [1] for _ in range(h)] + [[1] * (w + 1)]
+        ver = [["10"] * w + ['1'] for _ in range(h)] + [[]]
+        hor = [["11"] * w + ['1'] for _ in range(h + 1)]
+
+        def walk(x, y):
+            vis[y][x] = 1
+
+            d = [(x - 1, y), (x, y + 1), (x + 1, y), (x, y - 1)]
+            shuffle(d)
+            for (xx, yy) in d:
+                if vis[yy][xx]: continue
+                if xx == x: hor[max(y, yy)][x] = "10"
+                if yy == y: ver[y][max(x, xx)] = "00"
+                walk(xx, yy)
+
+        walk(randrange(w), randrange(h))
+
+        s = ""
+        for (a, b) in zip(hor, ver):
+            s += ''.join(a + ['\n'] + b + ['\n'])
+        return s
+
+    # Maze ON COMMENCE
+
     if aléatoire==1:
-        print("pas fait")
+        MazeRaw = make_maze(w,h)
+        a = 0
+        Maze = [[0 for x in range(w * 2 + 1)] for y in range(h * 2 + 1)]
+
+        for y in range(h * 2 + 1):
+            for x in range(w * 2 + 1):
+                Maze[y][x] = int(MazeRaw[a])
+                a += 1
+            a += 1
+
     else :
         Maze = [[0, 0, 1, 0, 1, 0, 0, 0, 1, 0],
                 [0, 0, 1, 0, 0, 0, 0, 0, 1, 0],
                 [0, 0, 0, 0, 1, 0, 1, 0, 1, 1],
                 [0, 0, 1, 0, 1, 0, 1, 0, 0, 0],
                 [0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
-                [0, 0, 0, 0, 1, 0, 0, 1, 0, 0]]
+                [0, 0, 0, 0, 1, 0, 1, 1, 0, 0]]
 
     for i in range(len(Maze)):
         for j in range(len(Maze[i])):
             if Maze[i][j]==1:
                 Maze[i][j]=-1
+
     h, w = len(Maze), len(Maze[0])  # h c'est la hauteur et w la longueur; hauteur de bas en haut et longeur de gauche à droite sur le
     # tableau au dessus
 
@@ -64,7 +140,6 @@ def main(Montrer, aléatoire):
     Path[P[0]][P[1]] = 0  # Départ
     Maze[P[2]][P[3]] = 2  # Arrivé
     n, a, b = 0, 0, 0
-
     # A partir de là, on commence le pathfinding
     Sens=1
     while Path[P[2]][P[3]] == -1:
@@ -98,6 +173,13 @@ def main(Montrer, aléatoire):
     print("Maze :")
     show_maze()
     print("C'est fini")
+    temps = time.time() - start_temps
+    print(temps)
+    interface()
+w,h=30,30
+P = [1, 1, h*2-1, w*2-1]
+start_temps=time.time()
+main(0,1)
 
-P = [0, 0, 5, 9]
-main(1,0)
+
+
