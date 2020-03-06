@@ -6,7 +6,7 @@ import time
 #   P=(x1,y1,x2,y2)
 #  print(P)
 def main(Montrer, aléatoire):
-    global h, w, Maze, Path
+    global h, w, Maze, Path, libre
     # Montre le labyrinthe
     def show_maze():
         for i in range(len(Maze)):
@@ -29,22 +29,28 @@ def main(Montrer, aléatoire):
 
     # Double scanneur
     def double_scanner():
+        global libre
         for y1 in range(len(Maze)):
             for x1 in range(len(Maze[y1])):
                 if Sens==1:
                     if Path[y1][x1] == n:
                         for y2 in range(-1, 2):
                             for x2 in range(-1, 2):
-                                if (0<=y1+y2<=(len(Maze)-1) and 0<=x1+x2<=(len(Maze[y1]))-1) and Path[y1 + y2][x1 + x2] == -1 and Maze[y1+y2][x1+x2]!=-1:
-                                    # b=x a=y; vérifie toute les cases autour de la case trouvé, le fait en ligne
-                                    # comme un scanner de haut en bas commence en a=1,b=0
-                                    Path[y1 + y2][x1 + x2] = n + 1
+                                if (y2==-1 and x2==0) or (y2==0 and x2==1) or (y2==1 and x2==0) or (y2==0 and x2==-1):
+                                    if (0<=y1+y2<=(len(Maze)-1) and 0<=x1+x2<=(len(Maze[y1]))-1) and Path[y1 + y2][x1 + x2] == -1 and Maze[y1+y2][x1+x2]!=-1:
+                                        Path[y1 + y2][x1 + x2] = n + 1
+                                        libre=1
                 else:
                     if Maze[y1][x1] == n:
                         for y2 in range(-1, 2):
                             for x2 in range(-1, 2):
-                                if (0 <= y1 + y2 <= (len(Maze) - 1) and 0 <= x1 + x2 <= (len(Maze[y1])) - 1) and Maze[y1 + y2][x1 + x2] == 0 and Maze[y1 + y2][x1 + x2] != -1 and Path[y1 + y2][x1 + x2]==n-1:
-                                    Maze[y1 + y2][x1 + x2] = n - 1
+                                if (y2 == -1 and x2 == 0) or (y2 == 0 and x2 == 1) or (y2 == 1 and x2 == 0) or (y2 == 0 and x2 == -1):
+                                    if (0 <= y1 + y2 <= (len(Maze) - 1) and 0 <= x1 + x2 <= (len(Maze[y1])) - 1) and Maze[y1 + y2][x1 + x2] == 0 and Maze[y1 + y2][x1 + x2] != -1 and Path[y1 + y2][x1 + x2]==n-1:
+                                        Maze[y1 + y2][x1 + x2] = n - 1
+
+    # b=x a=y; vérifie toute les cases autour de la case trouvé, le fait en ligne
+    # comme un scanner de haut en bas commence en a=1,b=0
+
     # Interface
     def interface():
         fen = Tk()
@@ -54,7 +60,7 @@ def main(Montrer, aléatoire):
             pixel = screen_width / w
         else:
             pixel = screen_height / h
-        pixel = int(pixel * 0.9)
+        pixel = int(pixel * 0.95)
         fen.title("Pathfinding algorithm")
         Terrain=Canvas(fen, height=pixel * h, width=pixel * w)
         Terrain.pack()
@@ -142,6 +148,7 @@ def main(Montrer, aléatoire):
     n, a, b = 0, 0, 0
     # A partir de là, on commence le pathfinding
     Sens=1
+    libre=0
     while Path[P[2]][P[3]] == -1:
         double_scanner()
         n+=1
@@ -152,8 +159,10 @@ def main(Montrer, aléatoire):
             print(" ")
             print("Maze :")
             show_maze()
-        if n==50000:
-            print("n=50000")
+        if libre==0:
+            print("L'arrivé est bloqué")
+            break
+        libre=0
 
     # On trouve le chemin le plus court ici depuis la sortie
     Sens=0
@@ -174,10 +183,11 @@ def main(Montrer, aléatoire):
     show_maze()
     print("C'est fini")
     temps = time.time() - start_temps
-    print(temps)
+    print(temps,"sec")
     interface()
-w,h=30,30
+w,h=10,10
 P = [1, 1, h*2-1, w*2-1]
+#P = [0, 0, 5, 9]
 start_temps=time.time()
 main(0,1)
 
