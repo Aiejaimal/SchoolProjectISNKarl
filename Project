@@ -124,14 +124,19 @@ def main(Montrer, aléatoire):
                 Maze[y][x] = int(MazeRaw[a])
                 a += 1
             a += 1
+        P = [1, 1, h * 2 - 1, w * 2 - 1]
 
+    elif aléatoire==2:
+        Maze = [[0 for x in range(w)] for y in range(h)]
+        P=[0,0,h-1,w-1]
     else :
-        Maze = [[0, 0, 1, 0, 1, 0, 0, 0, 1, 0],
-                [0, 0, 1, 0, 0, 0, 0, 0, 1, 0],
-                [0, 0, 0, 0, 1, 0, 1, 0, 1, 1],
-                [0, 0, 1, 0, 1, 0, 1, 0, 0, 0],
-                [0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
-                [0, 0, 0, 0, 1, 0, 1, 1, 0, 0]]
+        Maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+                [0, 1, 1, 0, 0, 0, 0, 0, 1, 0],
+                [0, 0, 1, 1, 1, 0, 1, 0, 0, 1],
+                [1, 0, 1, 0, 1, 0, 1, 1, 0, 0],
+                [1, 0, 1, 0, 0, 0, 1, 0, 0, 0],
+                [1, 0, 0, 0, 1, 0, 0, 0, 1, 0]]
+        P = [0, 0, 5, 9]
 
     for i in range(len(Maze)):
         for j in range(len(Maze[i])):
@@ -152,6 +157,7 @@ def main(Montrer, aléatoire):
     while Path[P[2]][P[3]] == -1:
         double_scanner()
         n+=1
+
         if Montrer==1:
             print("n=",n)
             print("Path :")
@@ -186,10 +192,11 @@ def main(Montrer, aléatoire):
     print(temps,"sec")
     interface()
 w,h=10,10
-P = [1, 1, h*2-1, w*2-1]
+#P = [1, 1, h*2-1, w*2-1]
 #P = [0, 0, 5, 9]
 start_temps=time.time()
 main(0,1)
+
 
 
 
