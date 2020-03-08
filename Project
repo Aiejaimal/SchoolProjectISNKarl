@@ -3,7 +3,7 @@ from random import shuffle, randrange
 import time
 
 
-def main(Montrer, aléatoire):
+def main(Montrer, aleatoire):
     global h, w, Maze, Path, libre
     # Montre le labyrinthe
     def show_maze():
@@ -58,12 +58,12 @@ def main(Montrer, aléatoire):
     # Interface
     def interface():
 
-        if Montrer!=2:
-            for y1 in range(len(Maze)):
-                for x1 in range(len(Maze[y1])):
-                    if Maze[y1][x1] != -1 and Maze[y1][x1] != 0 :
-                        carreau[y1][x1] = Terrain.create_rectangle(x1 * pixel, y1 * pixel, (x1 + 1) * pixel,(y1 + 1) * pixel, fill='#B4B425')
-                        carreau[y1][x1] = Terrain.create_text(x1*(pixel)+(pixel/2), y1*(pixel)+(pixel/2), text=Maze[y1][x1],font=('Times', (int(pixel*0.5)), 'bold'))
+
+        for y1 in range(len(Maze)):
+            for x1 in range(len(Maze[y1])):
+                if Maze[y1][x1] != -1 and Maze[y1][x1] != 0 :
+                    carreau[y1][x1] = Terrain.create_rectangle(x1 * pixel, y1 * pixel, (x1 + 1) * pixel,(y1 + 1) * pixel, fill='#B4B425')
+                    carreau[y1][x1] = Terrain.create_text(x1*(pixel)+(pixel/2), y1*(pixel)+(pixel/2), text=Maze[y1][x1],font=('Times', (int(pixel*0.5)), 'bold'))
 
         carreau[P[2]][P[3]] = Terrain.create_rectangle(P[3] * pixel, P[2] * pixel, (P[3] + 1) * pixel, (P[2] + 1) * pixel,fill='green')
         carreau[P[2]][P[3]] = Terrain.create_text(P[3] * (pixel) + (pixel / 2), P[2] * (pixel) + (pixel / 2),text=Maze[P[2]][P[3]], font=('Times', (int(pixel * 0.5)), 'bold'))
@@ -71,7 +71,7 @@ def main(Montrer, aléatoire):
 
     def update(x3,y3):
         if Montrer == 2:
-            carreau[y3][x3] = Terrain.create_rectangle((x3) * pixel, (y3) * pixel,(x3 + 1) * pixel, (y3 + 1) * pixel,fill='#B4B425')
+            carreau[y3][x3] = Terrain.create_rectangle((x3) * pixel, (y3) * pixel,(x3 + 1) * pixel, (y3 + 1) * pixel,fill='#277790')
             carreau[y3][x3] = Terrain.create_text((x3) * (pixel) + (pixel / 2),(y3) * (pixel) + (pixel / 2),text=Path[y3][x3],font=('Times', (int(pixel * 0.5)), 'bold'))
 
 
@@ -102,7 +102,7 @@ def main(Montrer, aléatoire):
 
     # Maze ON COMMENCE
 
-    if aléatoire==1:
+    if aleatoire==1:
         MazeRaw = make_maze(w,h)
         a = 0
         Maze = [[0 for x in range(w * 2 + 1)] for y in range(h * 2 + 1)]
@@ -114,7 +114,7 @@ def main(Montrer, aléatoire):
             a += 1
         P = [1, 1, h * 2 - 1, w * 2 - 1]
 
-    elif aléatoire==2:
+    elif aleatoire==2:
         Maze = [[0 for x in range(w)] for y in range(h)]
         P=[0,0,h-1,w-1]
     else :
@@ -169,7 +169,8 @@ def main(Montrer, aléatoire):
     carreau[P[0]][P[1]] = Terrain.create_rectangle(P[1] * pixel, P[0] * pixel, (P[1] + 1) * pixel, (P[0] + 1) * pixel,fill='red')  # Début
 
     carreau[P[0]][P[1]] = Terrain.create_text(P[1] * (pixel) + (pixel / 2), P[0] * (pixel) + (pixel / 2),text=Maze[P[0]][P[1]], font=('Times', (int(pixel * 0.5)), 'bold')) # Début
-    carreau[P[2]][P[3]] = Terrain.create_text(P[3] * (pixel) + (pixel / 2), P[2] * (pixel) + (pixel / 2),text=Maze[P[2]][P[3]], font=('Times', (int(pixel * 0.5)), 'bold')) # Fin
+    if Montrer==2:
+        fen.update()
 
     #if Montrer==2:
      #   fen.mainloop()
@@ -180,7 +181,9 @@ def main(Montrer, aléatoire):
     while Path[P[2]][P[3]] == -1:
         double_scanner()
         n+=1
-
+        if Montrer==2:
+            fen.update()
+            time.sleep(0.15)
         if Montrer==1:
             print("n=",n)
             print("Path :")
@@ -192,7 +195,7 @@ def main(Montrer, aléatoire):
             print("L'arrivé est bloqué")
             break
         libre=0
-
+    carreau[P[2]][P[3]] = Terrain.create_rectangle(P[3] * pixel, P[2] * pixel, (P[3] + 1) * pixel, (P[2] + 1) * pixel,fill='green')
     # On trouve le chemin le plus court ici depuis la sortie
     Sens=0
     y1,x1=P[2],P[3]
@@ -229,8 +232,6 @@ start_temps=time.time()
 # b=1 : Labyrinthe completement aléatoire
 # b=2 : Salle completement vide
 
-main(2,1)
-
-
+main(2,0)
 
 
